@@ -1,6 +1,9 @@
 <! DOCTYPE html>
 <html>
 <head>
+	<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+	 <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
 	<style>
 	h2 {
 		font-family: sans-serif; text-align: center;
@@ -16,14 +19,34 @@
 		font-family: sans-serif;
 	}
 	</style>
+	<script>
+            $(document).ready(function () {
+        cartodb.createVis('map', 'https://bendd165.cartodb.com/api/v2/viz/5f00d594-ec76-11e5-a3fe-0e31c9be1b51/viz.json')
+        .done(function(vis, layers){
+        	dataLayer = layers[1].getSubLayer(0);
+        });
+        $('.city-picker').change(function () {
+        	var city = $(this).val();
+        	var sql;
+        	if (city === 'All'){
+        		sql = "SELECT * FROM listings_1";
+        	}
+        	else {
+        		sql = "SELECT * FROM listings_1 WHERE city = '" + city + "'"
+        	}
+        	dataLayer.setSQL(sql);
+        });
+      });
+    </script>
 </head>
 <body>
 <h2> Santa Cruz Area Hosts </h2>
-<iframe style= "padding: 5px" width="90%" height="520" frameborder="0" src="https://bendd165.cartodb.com/viz/91c83ab8-e022-11e5-b6a1-0e5db1731f59/embed_map" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
+ <div id="map"></div>
 
-<select style="padding: 5px"name="City">
+<select class= "city-picker">
+	<option value="All" selected>All</option>
   <option value="Santa Cruz">Santa Cruz</option> 
-  <option value="Aptos" selected>Aptos</option>
+  <option value="Aptos">Aptos</option>
   <option value="Watsonville">Watsonville</option>
   <option value="Capitola">Capitola</option>
   <option value="Soquel">Soquel</option>
