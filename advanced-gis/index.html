@@ -38,11 +38,51 @@
         });
       });
     </script>
+    <script>//
+// Add the average price of AirBnB rentals in New York 
+// using CartoDB's SQL API.
+//
+
+$(document).ready(function () {
+  // Use jQuery to call the SQL API
+  var url = 'https://bendd165.cartodb.com/api/v2/sql?' + $.param({
+    q: 'SELECT AVG(price) FROM listings_1'
+  });
+  
+  $.getJSON(url)
+    
+    // When it's done it will pass the parsed response in data
+    .done(function (data) {
+      $('.average').text(data.rows[0].avg);
+    });
+});</script>
+  <script>//
+// Add the average price of AirBnB rentals in New York 
+// using CartoDB's SQL API.
+//
+
+$(document).ready(function () {
+  // Use jQuery to call the SQL API
+  var url = 'https://bendd165.cartodb.com/api/v2/sql?' + $.param({
+    q: 'SELECT AVG(beds) FROM listings_1'
+  });
+  
+  $.getJSON(url)
+    
+    // When it's done it will pass the parsed response in data
+    .done(function (data) {
+      $('.beds').text(data.rows[0].avg);
+    });
+});</script>
 </head>
 <body>
 <h2> Santa Cruz Area Hosts </h2>
  <div id="map"></div>
 
+ The average room price is: $<span class="average"></span>
+<br>
+  The average number of beds is: <span class="beds"></span>
+  <br>
 <select class= "city-picker">
 	<option value="All" selected>All</option>
   <option value="Santa Cruz">Santa Cruz</option> 
