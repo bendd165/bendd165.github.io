@@ -5,7 +5,7 @@
     <meta charset="utf-8">
 
     <!-- Load jQuery -->
-    <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 
     <!-- Load Leaflet -->
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
@@ -22,7 +22,7 @@
         right: 15px;
         padding: 25px;
         top: 15px;
-        width: 1000px;
+        width: 200px;
         z-index: 5000;
       }
     </style>
@@ -35,7 +35,7 @@
       var map;
 
       $(document).ready(function () {
-        map = L.map('map').setView([40.70, -73.96], 11);
+        map = L.map('map').setView([22.543903, 114.084281], 16);
         
         // Hide sidebar when map is clicked
         map.on('click', function () {
@@ -44,9 +44,10 @@
 
         L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
           maxZoom: 18,
+          
         }).addTo(map);
         
-        $.getJSON('http://bendd165.github.io/final/secondhand_markets.geojson', function (data) {
+        $.getJSON('https://raw.githubusercontent.com/bendd165/bendd165.github.io/master/final/secondhand_markets.geojson', function (data) {
           L.geoJson(data, {
             
             /*
@@ -54,7 +55,7 @@
              */
             onEachFeature: function (feature, layer) {
               layer.on('click', function () {
-                $('.sidebar').html('name: ' + feature.properties.name).show();
+                $('.sidebar').html('name: ' + feature.properties.NAME).show();
               });
             }
           }).addTo(map);
