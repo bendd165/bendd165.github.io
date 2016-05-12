@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
 
     <!-- Load jQuery -->
-    <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 
     <!-- Load Leaflet -->
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
@@ -42,8 +43,7 @@
         });
 
         L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
-          maxZoom: 18,
-          
+          maxZoom: 18,          
         }).addTo(map);
         
         $.getJSON('https://raw.githubusercontent.com/bendd165/bendd165.github.io/master/final/secondhand_markets.geojson', function (data) {
@@ -54,7 +54,7 @@
              */
             onEachFeature: function (feature, layer) {
               layer.on('click', function () {
-                $('.sidebar').html('Name: ' + feature.properties.name).show(); 
+                $('.sidebar').html('Name: ' + feature.properties.name).show();
               });
             }
           }).addTo(map);
