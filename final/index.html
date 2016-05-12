@@ -22,7 +22,7 @@
         right: 15px;
         padding: 25px;
         top: 15px;
-        width: 200px;
+        width: 500px;
         z-index: 5000;
       }
     </style>
@@ -55,7 +55,7 @@
              */
             onEachFeature: function (feature, layer) {
               layer.on('click', function () {
-                $('.sidebar').html('name: ' + feature.properties.NAME).show();
+                $('.sidebar').html('Name: ' + feature.properties.name).show(); 
               });
             }
           }).addTo(map);
