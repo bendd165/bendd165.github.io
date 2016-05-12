@@ -46,7 +46,7 @@
           maxZoom: 18,
         }).addTo(map);
         
-        $.getJSON('https://thenewschool.cartodb.com/u/dracybbenc/api/v2/viz/51ff2156-1864-11e6-b56a-0ecd1babdde5/viz.json', function (data) {
+        $.getJSON('http://bendd165.github.io/final/secondhand_markets.geojson', function (data) {
           L.geoJson(data, {
             
             /*
