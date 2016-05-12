@@ -53,9 +53,11 @@
              */
             onEachFeature: function (feature, layer) {
               layer.on('click', function () {
-                $('.sidebar').html('Name: ' + feature.properties.name + '</p><p>Description: ' + feature.properties.description).show();
+                var content1 = 'Name: ' + feature.properties.name + '</p><p><img src="' + feature.properties.photo01 + '" width=500 </p><p><img src="' + feature.properties.photo02 + '"width=500></p><p><img src="' + feature.properties.photo03 + '" width=500 </p><p><img src="' + feature.properties.photo04 + '" width=500 </p><p><img src="' + feature.properties.photo05 + '" width=500 </p>'
+                
+                $('.sidebar').html(content1).show();
               });
-            }
+            },
           }).addTo(map);
         })
       });
