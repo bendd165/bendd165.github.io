@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -14,59 +13,680 @@
     <link rel="stylesheet" href="../css/styledLayerControl.css" />
     <script src="../src/styledLayerControl.js"></script>
     
-    <style>
-      /*
-       * Make the sidebar appear above the map, to the right.
-       */
-      .sidebar {
-        background: white;
-        display: none;
-        position: absolute;
-        right: 15px;
-        padding: 25px;
-        top: 15px;
-        width: 500px;
-        z-index: 5000;
-      }
-    </style>
-
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:600' rel='stylesheet' type='text/css'>
+    
+   <!------------------------------------------------------------------------------------->
+   <!--Add base map-->
+   <!--------------------------------------------------------------------------------->
+    
     <script>
-      /*
-       * Keep the map variable out here so we can access it from
-       * the console.
-       */
       var map;
-
+      var layer1;
+      var layer2;
+      var layer3;
+      var layer4;
+      var layer5;
+      
+    // Variables that will store our layers.   
+     // layer1 is pre to post resettlement
+     // layer2 is pre resettlement
+     // layer3 is Manmade vulnerable locations 
+     // layer4 is Resettlement locations 
+     // layer5 is natural resources
+      
+      
+      
+      
       $(document).ready(function () {
-        map = L.map('map').setView([22.543903, 114.088281], 16);
+//Create the map
+      map = L.map('map').setView([19.10, 72.89], 12);
         
-        // Hide sidebar when map is clicked
+// Hide sidebar when map is clicked
         map.on('click', function () {
           $('.sidebar').hide();
         });
-
-        L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
-          maxZoom: 18,          
-        }).addTo(map);
         
-        $.getJSON('https://raw.githubusercontent.com/bendd165/bendd165.github.io/master/final/secondhand_markets.geojson', function (data) {
-          L.geoJson(data, {
+//Add base tiles 
+       L.tileLayer('https://api.mapbox.com/styles/v1/jadhs825/cimuy6ra40097ahnpwvynhou7/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFkaHM4MjUiLCJhIjoiY2ltcXp3em9sMDBybnVubTRzem12NTR4YyJ9.Cb5AthZ_DTeyquDljjvHBQ').addTo(map);
+  
+        
+           
+        
+// ---------------------------------------------------------------------------------
+      // Add data loaded from GitHub.....layer1 = pre to post resettlement locations
+// ---------------------------------------------------------------------------------
+      
+               $.getJSON('https://raw.githubusercontent.com/jadhavshibani/jadhavshibani.github.io/master/DeepMappingResettlement/Mumbai/mumbai_pre_to_post_resettlement_path.geojson').done (function (data) {
+
+// It's crucial that we save the layer to a variable. Here set a value
+                 
+        layer1 = L.geoJson(data, {  
+          
+          // Add a popup to each "layer" (shape in the GeoJSON)
             
-            /*
-             * Instead of adding a popup, put data in sidebar and show it.
-             */
-            onEachFeature: function (feature, layer) {
-              layer.on('click', function () {
-                $('.sidebar').html('Name: ' + feature.properties.name).show();
-              });
-            }
-          }).addTo(map);
-        })
+      onEachFeature: function (feature, layer) {
+      layer.on('click', function () {
+                $('.sidebar').html( 'Place of Origin: ' +feature.properties.origin + '</p><p>[Re]settlement Site: ' + feature.properties.relocation).show();
       });
+        
+       } ,  
+          
+          
+        style:function (feature) {
+        var style = {
+            color: 'grey',
+            opacity: .25,
+            weight: 12
+          }; 
+          
+          if (feature.properties.relocation == "lallubhai" ){
+            style.color = '#F16626';
+            
+          }
+          else if (feature.properties.relocation == "Natvar Parekh Compound" ){
+            style.color = '#F6A63B';
+          }
+          
+          else if (feature.properties.relocation == "Vashi Naka" ){
+            style.color = '#F7c94d';
+          }
+          
+          else if (feature.properties.relocation == "Milan Nagar" ){
+            style.color = 'Yellow';
+          }
+          
+           return style; 
+          } 
+                 
+          }).addTo(map);
+        });   
+                
+// ---------------------------------------------------------------------------------        
+      // Add data loaded from GitHub.....layer2 = Pre resettlement locations  
+// ---------------------------------------------------------------------------------
+          $.getJSON('https://raw.githubusercontent.com/jadhavshibani/jadhavshibani.github.io/master/DeepMappingResettlement/Mumbai/mumbai_pre_resettlement_locations_mumbai.geojson').done (function (data) {layer2 = L.geoJson(data, {  
+
+      // Create circles instead of standard markers
+        pointToLayer: function (feature, latlng) {
+          return L.circleMarker(latlng);
+        },
+            
+    // Add a popup to each "layer" (shape in the GeoJSON)
+            
+      onEachFeature: function (feature, layer) {
+      layer.on('click', function () {
+                $('.sidebar').html( feature.properties.name_of_place_of_origin + '</p><p>' + feature.properties.type_of_dwellers).show();
+      });
+        
+       } , 
+            
+            
+      // styling properties for Leaflet here:http://leafletjs.com/reference.html#path-options
+        style:function (feature) {
+        var stylepoint = {
+            fillColor: false,
+            fillOpacity: 0,
+            radius:  9,
+            stroke: true,
+            color : 'grey'
+          }; 
+           return stylepoint; 
+          } 
+          
+            
+          }).addTo(map);
+        });
+// ---------------------------------------------------------------------------------         
+        // Add data loaded from GitHub.....layer3 = Manmade vulnerable locations  
+// --------------------------------------------------------------------------------- 
+        $.getJSON('https://raw.githubusercontent.com/jadhavshibani/jadhavshibani.github.io/master/DeepMappingResettlement/Mumbai/mumbai_man_made_vulnerable_location.geojson').done (function (data) {layer3 = L.geoJson(data, {  
+        
+          
+          
+   // Add a popup to each "layer" (shape in the GeoJSON)
+            
+      onEachFeature: function (feature, layer) {
+      layer.on('click', function () {
+        var content1 = feature.properties.name  + 
+                                   '</p><p>' + feature.properties.subtype + 
+                                   '</p><p>'+feature.properties.activity + 
+                                   '</p><p><a target = "_blank" href="' + feature.properties.reference_1 + '">' + feature.properties.ref_1_names + '</a>' + '</p>'
+
+if(feature.properties.video){
+content1+=
+                                   '<p><iframe width="250" height="154" frameborder="0" allowfullscreen src="'+feature.properties.video +'"></iframe>';
+}
+
+                $('.sidebar').html(  content1 ).show();
+      });
+        
+       } ,    
+
+     
+      // You can find all of the styling properties for Leaflet here: http://leafletjs.com/reference.html#path-options
+            
+        style:function (feature) {
+          var style = {
+            fillOpacity: 0.8,
+            stroke: false
+            
+          }; 
+          
+           if (feature.properties.type == "Power Plant" ){
+            style.color = '#966A73'; 
+          }
+         
+          else if (feature.properties.type == "Refinery") {
+            // \n because there is a space in the data set after the word refinery
+            style.color = '#C78D98';
+          }
+          
+          else if (feature.properties.type == "Waste Disposal" ){
+            style.color = '#61454A';
+          }
+          
+          else if (feature.properties.type == "Energy") {
+            style.color = '#FFB4C3';
+          }
+          
+           return style; 
+          },  
+          
+          
+          }).addTo(map);
+        });    
+        
+// --------------------------------------------------------------------------------- 
+        // Add data loaded from GitHub.....layer4 = Resettlement locations
+// --------------------------------------------------------------------------------- 
+       $.getJSON('https://raw.githubusercontent.com/jadhavshibani/jadhavshibani.github.io/master/DeepMappingResettlement/Mumbai/mumbai_post_resettlement_locations.geojson').done (function (data) {layer4 = L.geoJson(data, {  
+             
+ // You can find all of the styling properties for Leaflet here:http://leafletjs.com/reference.html#path-options
+            
+        style:function (feature) {
+          var style = {
+            
+            fillOpacity: 1,
+            stroke: true,
+            color: 'grey'
+          }; 
+          
+           return style; 
+          } ,
+         
+         // Add a popup to each "layer" (shape in the GeoJSON)
+            
+      onEachFeature: function (feature, layer) {
+               layer.on('click', function () {
+        var content3 = feature.properties.name + 
+                                   '</p><p>Status: ' + feature.properties.status + 
+                                   '</p>'
+                       if(feature.properties.plan){
+content3+='<p><img width="250" height="200"src="'+feature.properties.plan + '"></p>';
+                       }
+
+                $('.sidebar').html( content3).show();
+      });
+         
+       } 
+          }).addTo(map);
+        });    
+          
+        // ---------------------------------------------------------------------------------        
+      // Add data loaded from GitHub.....layer5 = natural resources   
+// --------------------------------------------------------------------------------- 
+        $.getJSON('https://raw.githubusercontent.com/jadhavshibani/jadhavshibani.github.io/master/DeepMappingResettlement/Mumbai/mumbai_natural_resources.geojson').done (function (data) {
+          data.features = data.features.reverse();
+          layer5 = L.geoJson(data, {  
+            
+       
+ // You can find all of the styling properties for Leaflet here:http://leafletjs.com/reference.html#path-options
+            
+        style:function (feature) {
+          var style = {
+            fillColor: '#BDE3d7',
+            fillOpacity: .5,
+            stroke: false,
+            
+          };  
+          if (feature.properties.type == "delta" ){
+            style.color = '#BDE3d7'; 
+          }
+         
+          else if (feature.properties.type == "Salt Pan") {
+            style.stroke = true;
+            style.color = 'grey';
+            style.fillOpacity = 0.1;
+            style.dashArray = "1,5,1,5";
+            style.weight = 4;
+          }
+        
+           return style; 
+       
+          },
+          
+            // Add a popup to each "layer" (shape in the GeoJSON)
+            
+      onEachFeature: function (feature, layer) {
+          if (feature.properties.type === "Salt Pan") {
+            //layer.bringToFront();
+          }
+       layer.on('click', function () {
+         var content = feature.properties.name + 
+                                   '</p>';
+         if (feature.properties.video){
+           content+=
+        
+         '<p><iframe width="250" height="154" frameborder="0" allowfullscreen src="'+feature.properties.video +'"></iframe>';
+            }
+         
+        else if(feature.properties.new_links){
+           content2+=    '</p><p><a href="' + feature.properties.new_links + '">' + feature.properties.link_name + '</a>';
+         }
+           
+           
+                $('.sidebar').html( content ).show();
+      });
+        
+        
+       } 
+          
+          
+          
+          }).addTo(map);
+         layer5.bringToBack(); 
+          
+        });    
+        
+// --------------------------------------------------------------------------------- 
+      // end of adding layers and editing it 
+// ---------------------------------------------------------------------------------  
+        
+        
+      // Add change handlers to the checkboxes
+      //
+      // If the checkbox is checked, "add" (show) the layer, if it is not,
+      // "remove" (hide) the layer.
+      //
+      $('.layer1').change(function () {
+        if ($(this).is(':checked')) {
+          map.addLayer(layer1);     
+        }
+        else {
+          map.removeLayer(layer1);     
+        }
+      });
+
+      $('.layer2').change(function () {
+        if ($(this).is(':checked')) {
+          map.addLayer(layer2);     
+        }
+        else {
+          map.removeLayer(layer2);     
+        }
+      });  
+        
+        $('.layer3').change(function () {
+        if ($(this).is(':checked')) {
+          map.addLayer(layer3);     
+        }
+        else {
+          map.removeLayer(layer3);     
+        }
+      });
+        
+        $('.layer4').change(function () {
+        if ($(this).is(':checked')) {
+          map.addLayer(layer4);     
+        }
+        else {
+          map.removeLayer(layer4);     
+        }
+      });
+        
+        $('.layer5').change(function () {
+        if ($(this).is(':checked')) {
+          map.addLayer(layer5);     
+        }
+        else {
+          map.removeLayer(layer5);     
+        }
+      });
+        
+      });
+        
+      
     </script>
+             
+<!-----------------------------------------------------------------------------------   -->
+     <!---Tabs:  refer:"http://inspirationalpixels.com/tutorials/creating-tabs-with-html-css-and-jquery"-->
+<!-----------------------------------------------------------------------------------   -->
+    <script>
+      $(document).ready(function() {
+    $('.tabs .tab-links a').on('click', function(e)  {
+        var currentAttrValue = $(this).attr('href');
+ // Show/Hide Tabs
+        $('.tabs ' + currentAttrValue).fadeIn(350).siblings().hide();
+ // Change/remove current tab to active
+        $(this).parent('li').addClass('active').siblings().removeClass('active');
+        e.preventDefault();
+    });
+});
+    </script>
+    
+    
+    
+    
+    
+    
+<!--- Style me using CSS -->
+    <style>
+       /*----- Web Page -----*/
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+      
+       #map{ width: 100%; 
+             height: 90%; min-height: 90%; 
+             position: relative;
+             z-index:2;
+       }
+      
+  
+      #main_title {
+      margin-left: 10px;
+      float: left;  
+      background-color: none;
+    }  
+    
+    h2 {
+      position: absolute;
+      padding:10px;
+      margin:10px;
+      z-index:1;
+      background-color: none;
+    }
+      
+ /* Make the sidebar appear above the map, to the right. */
+       
+      .sidebar {
+        background: white;
+        opacity: 0.85;
+        display: none;
+        position: absolute;
+        left: 10px;
+        padding: 15px;
+        top: 35%;
+        width: 250px;
+        z-index: 2;
+      }
+      
+     
+      
+    /*  legend  */
+     <style type='text/css'>
+      
+      
+  .my-legend  {
+    }
+  .my-legend .legend-scale ul {
+    margin: 0;
+    margin-bottom: 5px;
+    float: right;
+    list-style: none;
+    z-index: 2; 
+       position:absolute;
+       top:30%;
+        right:10px;
+        padding:31px;
+        background-color: white;
+   
+    }
+  .my-legend .legend-scale ul li {
+    font-size:80%;
+    list-style: none;
+    margin-left: 0;
+    line-height: 18px;
+    margin-bottom: 2px;
+ 
+    }
+  .my-legend ul.legend-labels li span {
+    display: block;
+    float: left;
+    height: 16px;
+    width: 30px;
+    margin-right: 05px;
+    margin-left: 80;
+    border: 1px solid #999;
+   
+    }
+      
+   .my-legend ul.legend-labels li .circle{
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background-color: transparent;
+          
+      }   
+   
+    .my-legend ul.legend-labels li .dotted{
+        height: 15px;
+        width: 15px;
+        background-color: transparent;
+        border-style: dotted ;
+          
+      }     
+     
+     .my-legend ul.legend-labels li .square{
+        height: 17px;
+        width: 17px;
+        background-color: transparent;
+        border-style: none;
+          
+      }  
+      
+   /*check boxes  */
+      
+       .checkboxes{
+        position:absolute;
+        top:1%;
+        right: 10px;
+        background-color: white;
+        opacity: 0.85;
+        padding: 15px;
+        z-index:2; 
+    }
+
+      
+      /*----- Tabs -----*/
+.tabs {
+    width:100%;
+    display:inline-block;
+    text-decoration:none;
+}
+        
+    /*----- Tab Links -----*/
+   
+    .tab-links:after {
+        display:block;
+        clear:both;
+        content:'';
+    }
+    .tab-links li {
+        margin:0px 5px;
+        list-style:none;
+        float:left;
+    }
+        .tab-links a {
+            padding:9px 15px;
+            display:inline-block;
+            background:#BDE3d7;
+            font-size:16px;
+            font-weight:600;
+            color:#FFFFFF;
+            transition:all linear 0.15s;
+            text-decoration:none;
+        }
+        .tab-links a:hover {
+            background:white;
+            text-decoration:none;
+            color:black;
+        }
+    li.active a, li.active a:hover {
+        background:white;
+        color:#4c4c4c;
+        text-decoration:underline;
+    }
+    
+    /*----- Content of Tabs -----*/
+    .tab-content {
+        padding :50px;
+        box-shadow:-1px 1px 1px rgba(0,0,0,0.15);
+        background:white;
+    }
+        .tab {
+            display:none;
+        }
+        .tab.active {
+            display:block;
+        }
+      
+    </style>
   </head>
+  
   <body>
-    <div id="map"></div>
+    <div id="map">
+      <h2><img width="180" height="180" src="https://raw.githubusercontent.com/jadhavshibani/jadhavshibani.github.io/master/DeepMappingResettlement/Mumbai/map%20title.png"/></h2>
+    </div>
+    
+    <!-- sidebar -->
     <div class="sidebar"></div>
+    
+     <!-- legend -->
+    
+    <div class='my-legend'>
+    <div class='legend-scale'>
+    <ul class='legend-labels'>
+     <p><strong>Map Legend</strong></p> 
+    <li><span class='circle' ></span>Location of Origin</li>
+    <li><span class='square' style='background:grey;'></span>[Re]settlement Locations</li>
+    <p>Industrial Landscapes</p>
+    <li><span class='square' style='background:#61454A;'></span>Waste Disposal</li>
+    <li><span class='square' style='background:#966A73;'></span>Power Plant</li>
+    <li><span class='square' style='background:#C78D98;'></span>Refinery</li>
+    <li><span class='square' style='background:#FFB4C3;'></span>Energy</li>
+    <p>Ecological Conditions</p>
+    <li><span class='dotted'></span>Salt Pans</li>
+    <li><span class='square' style='background:#BDE3d7;'></span>Delta Land</li>
+  </ul>
+</div>
+</div>
+    
+    
+   <!--  check boxes  -->
+   <div class="checkboxes">
+     <div>
+       <strong> Pre [re]settlement </strong>
+     </div>
+     <div>
+       <input type="checkbox" class="layer2" id="layer2" checked />
+      <label for="layer2">Location of origin</label>
+    </div>
+    <div>
+      <input type="checkbox" class="layer1" id="layer1" checked />
+      <label for="layer1">Flow of Inhabitants</label>
+    </div>
+     
+    <div>
+      <input type="checkbox" class="layer4" id="layer4" checked />
+      <label for="layer4">[Re]settlement Locations</label>
+    </div>
+    </br>
+    <div>
+     <strong> Existing Conditions </strong>
+    </div>
+    <div>
+      <input type="checkbox" class="layer3" id="layer3" checked />
+      <label for="layer3">Industrial Landscapes</label>
+   </div>
+   <div>
+      <input type="checkbox" class="layer5" id="layer5" checked />
+      <label for="layer5">Ecological Landscapes</label>
+    </div>
+  
+   </div> 
+   </div> 
+
+
+  <!--  Tabs -->   
+      <div class="tabs">
+    <ul class="tab-links">
+        <!--<li class="active"><a href="#tab1">About</a></li>-->
+        <li><a href="#tab1">About</a></li>
+        <li><a href="#tab2">The Project: Deep Mapping</a></li>
+        <li><a href="#tab3">Supporting Information</a></li>
+        <li><a href="#tab4">Methodology</a></li>
+        <li><a href="#tab5">Get Involved</a></li>
+        
+    </ul>
+ 
+    <div class="tab-content">
+        <!--<div id="tab1" class="tab active">-->
+         <div id="tab1" class="tab">
+           <p><strong><u>Shaping [Re]settlement Ecologies</u>: 
+              From repressive and neglected to inclusive and responsive citizenship in Mumbai.</strong>
+<p>
+Human settlements have evolved and transformed exponentially to cope with the needs, desires and aspirations of human beings. Inversely, these settlements continue  to influence the physical, social and psychological well being of human beings who dwell and interact with it.  The selective linking of favourable spaces through visible and invisible infrastructures, is simultaneously plowing the fields of human settlements to distance and disconnect local spaces and people. The process of [re]settlement, caused due to involuntary displacement of communities, has been a means to geographical and psychologically segregate previously marginalized citizens in Mumbai.  The concentration of the [re]settlement initiatives in Mumbai is a distortion, one that is built through a repetitive process of dispossession, that continually ruptures communities.  While the built form of the settlements should ideally represent its content and function, all of which are much more important than the form itself, the container of the initiatives fails to capture and reflect the needs and desires of its inhabitants.  This built form is thus a manifestation of the violent ecologies that is magnified through the process of [re]settlement, which in turn prolongs the initiation to co-produce an environment in solidarity.  Hence,<strong> how can the process of resettlement be shaped in order to alleviate socio-economic, spatial and environmental segregation of marginalised communities?</strong>
+</p><p>
+To productively disrupt the nuances of the process, there are two distinct paths that can be explored within the dimensions of [re]settlement.  One which radically resists the process of displacement and resettlement in far off locations, by realising alternatives to rehabilitate the communities within their existing contexts.  While, the second path is to recognize the ongoing process of [re]settlement, along with its complexities, in order to shape it in a way that benefits both, the governing agencies and the communities at threat.  Path two, not only opens up the possibilities to engage with past, present and future initiatives at the same time, but at the same time provides an opportunity to question its relevance in future.  Given the scale and urgency at which [re]settlement initiatives are being employed, this thesis acknowledges the process by collaborating with local organizations in Mumbai. <strong> My practice, thereby aims to critically engages with this urban process  to situate a scenario that alleviate socio-economical and spatial segregation of marginalised communities, rather than one that enforces an ecology of repression and neglect. </strong>
+</p><p>
+In a sincere attempt to humanize the existing mechanisms, my practice indulges in three different interventions: the <strong>Deep Map</strong>, the <strong>Listening Archive</strong> and the <strong>Youth Program</strong>.  In order to holistically address the convoluted process of [re]settlement, the multidimensional interventions are built on both, the understanding of what it means to be resettled and the factors governing the socio-cultural, economical and environmental conditions of the human settlements.  The aim of Deep Map is to visualize the macro factors of the [re]settlement initiatives, that influences the ecologies of the given locations. This online, interactive map will serve as a tool for governing agencies, local organisations, activists and the beneficiaries to <strong>make informed decisions and to set criterias for the selection of a location for [re]settlement</strong>.  The Listening Archive is diagrammatic compilation of observations, experiences and reflections of the inhabitants of the existing resettlement initiatives, which were documented through extensive conversations and interactions over a period of two month in 2015.  On realising the depth and relevance of the Listening Archive, SPARC, India intends to use it as a tool not only to negotiate with the governing agencies to influence future initiatives, but also to engage with the existing initiatives to <strong>create meaningful spaces</strong>.  The sudden transition from horizontal to vertical settlements, along with added responsibilities and concerns is an astonishing leap of faith, a rupture that needs care and time to heal.  Designed to assist the beneficiaries in the initial phase of transition, the temporary [6 to 8 months] post [re]settlement Youth Program has a threefold objective: <strong>i. Provide guidance to cope with changes in everyday activities within the settlements.  ii. Instigate interaction and collaboration among the younger generation. iii. Provide a framework for horizontal transfer of knowledge across generations. </strong> 
+</p><p>
+The ways in which we, as humans perceive our own existence and relations is shaping the ever changing environment we dwell in. By shifting the focus from repressive and neglected ecologies to inclusive and responsive ecologies, my practice engages with the everyday life of the everyday people.
+</p>
+        <strong>Other Projects:</strong><p>
+         <a target="_blank" href= "https://issuu.com/jadhavshibani/docs/la_document"/>
+    <img width="500" height="300" src="https://raw.githubusercontent.com/jadhavshibani/jadhavshibani.github.io/master/DeepMappingResettlement/Mumbai/LA%20cover.png"/>
+</a>
+      </p>
+       
+        </div>
+ 
+        <div id="tab2" class="tab">
+          
+          <p>
+            The aim of deep mapping [re]settlement in Mumbai is to bring forth the macro contextual factors of existing and proposed resettlement locations that affects the everyday life of the inhabitants.<small>[i.]</small>  This online, interactive map aims to be <strong>a tool for local organisations, activists and the beneficiaries to set criterias and to make informed decisions in relation to the selection of locations for [re]settlement.</strong>  By visualizing the macro factors that influences the ecologies of the given locations, the map brings forth the urgency to address different aspects of vulnerability, that should be considered during such a life transforming process.</p>
+          <p>The identified vulnerability factors can be classified as: Environmental, Social and Economical.  The Environmental factors such as the nature and composition of the geographical terrain, proximity to protected areas [Coastal regulation Zones: deltas, ,mangroves and so on.  The Social factors can further be classified into two, one which includes proximity to hazardous locations such as dumping grounds, Nuclear reactor and industries, while the other is access to civic amenities and basic services, the impact of [re]settlem through oral histories.  The Economical factors can be measured in relation to pre and post resettlement locations, the distance between the two, proximities to affordable transportation systems and the availability of economic opportunities near the resettled location.  By illustrating the three factors the deep map intendants to highlight the formation of a restricted geography, one that leads to clustering of previously segregated and marginalized communities. 
+The concentration of existing and proposed [re]settlement projects is clearly evident through the visualization.  Further the concentration of theses settlements in far off locations is leading to geographical segregation of communities which primarily have been socially and culturally segregated.  
+          </p>
+          <p><small>[i.]</small> “<strong>Deep maps </strong>are finely detailed, multimedia depictions of a place and the people, buildings, objects, flora, and fauna that exist within it and which are inseparable from the activities of everyday life. These depictions may encompass the beliefs, desires, hopes, and fears of residents and help show what ties one place to another. A deep map is a way to engage evidence within its spatio-temporal context and to provide a platform for a spatially-embedded argument.” -
+<small>David Bodenhamer, John Corrigan, Trevor Harris, "Deep Maps and Spatial Narratives", (Indiana University Press, 2015)</small></p>
+        </div>
+ 
+        <div id="tab3" class="tab">
+            <p>Mapping technique</p>
+            <p>project methodology</p>
+        </div>
+        
+        <div id="tab4" class="tab">
+            <p>Next Steps</p>
+        </div>
+ 
+        <div id="tab5" class="tab">
+            <p><strong>Shibani Jadhav </strong>is a designer, researcher and an urban practitioner from India. She is currently pursuing her Masters Degree in Design and Urban Ecologies at Parsons The New School. Her practice engages with urban processes that shapes the ecologies of everyday lives, to create scenario that uphold inclusion within lived environments.  Shibani enjoys travelling, web mapping and running.</p>
+<p>
+For more information, suggestions or collaboration please get in touch via email: <strong>jadhavshibani@gmail.com</strong> </p>
+            
+            
+             
+        </div>
+    </div>
+</div>
+
   </body>
 </html>
+
+
