@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -9,7 +10,16 @@
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/unslider/2.0.3/js/unslider-min.js"></script>
+   
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/unslider/2.0.3/css/unslider.css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/unslider/2.0.3/css/unslider-dots.css">
     <style>
+      h2 {text-align: center;font-family:arial}
+      h3 {font-family:arial}
+      p {font-family:arial}
       /*
        * Make the sidebar appear above the map, to the right.
        */
@@ -19,10 +29,20 @@
         position: absolute;
         right: 15px;
         padding: 25px;
-        top: 15px;
+        top: 120px;
         width: 500px;
         z-index: 5000;
       }
+      body {
+      	height: 100%;
+      	min-height: 100%;
+      }
+      #map {
+      	position: relative;
+      	height: 600px;
+      	width: 100%;
+      }
+      
     </style>
 
     <script>
@@ -33,18 +53,19 @@
       var map;
 
       $(document).ready(function () {
-        map = L.map('map').setView([22.543903, 114.088281], 16);
+        map = L.map('map').setView([22.544903, 114.0890], 16);
         
         // Hide sidebar when map is clicked
         map.on('click', function () {
           $('.sidebar').hide();
         });
 
-        L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
-          maxZoom: 18,          
+        L.tileLayer('https://api.mapbox.com/styles/v1/dracybbenc/cimy8s8wu00s7ahnpuaqvp2k5/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZHJhY3liYmVuYyIsImEiOiJjaWdianEzcTUwbnlhdG9tOW9tOGl0bmVtIn0.SbHqC5Voof43gma2eSCaEg', {
+          maxZoom: 18,
+          minZoom: 16
         }).addTo(map);
         
-        $.getJSON('https://raw.githubusercontent.com/bendd165/bendd165.github.io/master/final/secondhand_markets.geojson').done (function (data) {
+        $.getJSON('https://raw.githubusercontent.com/bendd165/bendd165.github.io/master/final/secondhand_markets_final.geojson').done (function (data) {
           layer1 = L.geoJson(data, {
             
             /*
@@ -52,17 +73,24 @@
              */
             onEachFeature: function (feature, layer) {
               layer.on('click', function () {
-                var content1 = 'Name: ' + feature.properties.name + '</p><p><img src="' + feature.properties.photo01 + '" width=500 </p><p><img src="' + feature.properties.photo02 + '"width=500></p><p><img src="' + feature.properties.photo03 + '" width=500 </p><p><img src="' + feature.properties.photo04 + '" width=500 </p><p><img src="' + feature.properties.photo05 + '" width=500 </p>'
+              for (var prop in feature.properties) {
+                  console.log(feature.properties[prop]);
+                }
+              var content1 = '<h3>' + feature.properties.name + '</h2><p>' + feature.properties.description + '</p><div class="my-slider"><ul><li><img src="' + feature.properties.photo01 + '" width=500 </li><li><img src="' + feature.properties.photo02 + '"width=500></li><li><img src="' + feature.properties.photo03 + '"width=500 </li><li><img src="' + feature.properties.photo04 + '"width=500 </li><li><img src="' + feature.properties.photo05 + '"width=500 </li><li><img src="' + feature.properties.photo06 + '"width=500></li><li><img src="' + feature.properties.photo07 + '"width=500></li><li><img src="' + feature.properties.photo08 + '"width=500></li><li><img src="' + feature.properties.photo09 + '"width=500></li><li><img src="' + feature.properties.photo10 + '"width=500></li></ul></div>'
                 
                 $('.sidebar').html(content1).show();
+                $('.my-slider').unslider();
               });
             },
           }).addTo(map);
         })
       });
     </script>
+   
   </head>
   <body>
+    <h2>The Second-hand Markets of Huaqiangbei</h2>
+    <p>Huaqianbei is known as the epicenter of small electronics markets. Each building is filled with components that are used to make everything from the newest iPhone to the most custom "<a href="http://www.theatlantic.com/technology/archive/2014/05/chinas-mass-production-system/370898/">shanzhai</a>" tablets. This map explores some of the second-hand markets in the area that are a bit off the beaten track.</p>
     <div id="map"></div>
     <div class="sidebar"></div>
   </body>
