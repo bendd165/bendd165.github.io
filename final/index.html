@@ -73,7 +73,7 @@
           minZoom: 16
         }).addTo(map);
         
-        $.getJSON('https://raw.githubusercontent.com/bendd165/bendd165.github.io/master/final/secondhand_markets_final.geojson').done (function (data) {
+        $.getJSON('https://raw.githubusercontent.com/bendd165/bendd165.github.io/master/final/FINAL_secondhand_markets.geojson').done (function (data) {
           layer1 = L.geoJson(data, {
             
             /*
@@ -84,7 +84,7 @@
               for (var prop in feature.properties) {
                   console.log(feature.properties[prop]);
                 }
-              var content1 = '<h3>' + feature.properties.name + '</h2><p>' + feature.properties.description + '</p><div class="my-slider"><ul><li><img src="' + feature.properties.photo01 + '" width=500 </li><li><img src="' + feature.properties.photo02 + '"width=500></li><li><img src="' + feature.properties.photo03 + '"width=500 </li><li><img src="' + feature.properties.photo04 + '"width=500 </li><li><img src="' + feature.properties.photo05 + '"width=500 </li><li><img src="' + feature.properties.photo06 + '"width=500></li><li><img src="' + feature.properties.photo07 + '"width=500></li><li><img src="' + feature.properties.photo08 + '"width=500></li><li><img src="' + feature.properties.photo09 + '"width=500></li><li><img src="' + feature.properties.photo10 + '"width=500></li></ul></div>'
+              var content1 = '<h3>' + feature.properties.name + '</h2><p>' + feature.properties.description + '</p><div class="my-slider"><ul>' + feature.properties.photo00 + '</ul></div>'
                 
                 $('.sidebar').html(content1).show();
                 $('.my-slider').unslider();
